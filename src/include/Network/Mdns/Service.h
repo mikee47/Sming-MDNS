@@ -10,73 +10,102 @@
 
 #pragma once
 
-#include <user_config.h>
+#include "Request.h"
+#include <Data/LinkedObjectList.h>
 #include <Data/CStringArray.h>
-#include <memory>
-
-#if ENABLE_CUSTOM_LWIP == 2
-#ifdef ARCH_ESP8266
-#define MDNS_LWIP 0x0200
-#else
-#define MDNS_LWIP 0x0202
-#endif
-#elif ENABLE_CUSTOM_LWIP == 1
-#define MDNS_LWIP 0x0101
-#else
-#define MDNS_LWIP 0x0100
-#endif
+#include <WString.h>
 
 namespace mDNS
 {
+/**
+ * @brief ".local"
+ */
+DECLARE_FSTR(fstrDotLocal)
+
 class Responder;
 
-class Service
+/**
+ * @brief Describes a basic service
+ *
+ * The default methods translate to a DNS-SD name of "Sming._http._tcp.local".
+ * See :cpp:class:`mDNS::Name` for a description of how names are defined.
+ */
+class Service : public LinkedObjectTemplate<Service>
 {
 public:
+	using List = LinkedObjectListTemplate<Service>;
+
 	enum class Protocol {
-		Udp /* = DNSSD_PROTO_UCP */,
-		Tcp /* = DNSSD_PROTO_TCP */,
+		Udp,
+		Tcp,
 	};
 
 	/**
-	 * @brief Basic service information
-	 *
-	 * Defaults fine for most cases, just need to set name.
+	 * @brief User-friendly Instance name
 	 */
-	struct Info {
-		String name = "Sming";
-		String type = "http";
-		Protocol protocol = Protocol::Tcp;
-		uint16_t port = 80;
-	};
+	virtual String getInstance()
+	{
+		return F("Sming");
+	}
 
 	/**
-	 * @brief Override to obtain service information
+	 * @brief Identifies what the service does
 	 */
-	virtual Info getInfo() = 0;
+	virtual String getName()
+	{
+		return F("http");
+	}
+
+	/**
+	 * @brief Which protocol the service uses
+	 */
+	virtual Protocol getProtocol()
+	{
+		return Protocol::Tcp;
+	}
+
+	/**
+	 * @brief Which port to access service on
+	 */
+	virtual uint16_t getPort()
+	{
+		return 80;
+	};
 
 	/**
 	 * @brief Override to obtain txt items
+	 * @param txt Resource to add text items, e.g. name=value pairs
 	 *
-	 * LWIP2 calls this each time a TXT reply is created
-	 * Other implementations call it via begin().
-	 *
-	 * @retval CStringArray List of txt items, e.g. name=value pairs
+	 * Called whenever a TXT reply is created.
 	 */
-	virtual CStringArray getTxt()
+	virtual void addText(mDNS::Resource::TXT& txt)
 	{
-		return nullptr;
 	}
 
-private:
-	friend class Responder;
+	/**
+	 * @brief Get advertised service instance name
+	 * 
+	 * e.g. "Sming._http._tcp.local"
+	 */
+	String getInstanceName();
 
-#if MDNS_LWIP >= 0x0200
-	int8_t id = -1;
-#else
-	String type;
-	CStringArray txt;
-#endif
+	/**
+	 * @brief Get advertised service name (without the instance)
+	 * 
+	 * e.g. "_http._tcp.local"
+	 */
+	String getServiceName();
+	void getServiceName(String& s);
+
+	// Cache certain data to improve performance
+	struct Host {
+		String name;
+		String nameWithDomain;
+	};
+
+	bool handleQuestion(Question& question, const Host& host, Request& reply);
 };
 
 } // namespace mDNS
+
+String toString(mDNS::Service::Protocol protocol);

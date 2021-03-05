@@ -11,10 +11,16 @@
 #pragma once
 
 #include "Service.h"
+#include "Server.h"
 
 namespace mDNS
 {
-class Responder
+/**
+ * @brief Special name for querying list of services
+ */
+DECLARE_FSTR(fstrServicesLocal)
+
+class Responder : public Handler
 {
 public:
 	/**
@@ -41,18 +47,16 @@ public:
 	 */
 	bool addService(Service& svc);
 
+	bool removeService(Service& svc);
+
 	/**
-	 * @brief Restart a running stack
-	 *
-	 * Call when IP address changes, for example.
+	 * @brief Used internally to process received query, but also handy for testing
 	 */
-	bool restart();
+	bool onMessage(Message& message) override;
 
 private:
-#if LWIP_VERSION_MAJOR == 1
 	String hostname;
-	Service* service = nullptr;
-#endif
+	Service::List services;
 };
 
 } // namespace mDNS
