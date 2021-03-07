@@ -14,7 +14,7 @@ to advertise themselves on the local network.
 
 To use:
 
-1. Add ``COMPONENT_DEPENDS += mdns`` to your application componenent.mk file.
+1. Add ``COMPONENT_DEPENDS += MDNS`` to your application componenent.mk file.
 2. Add these lines to your application::
 
    #include <Mdns/Responder.h>
