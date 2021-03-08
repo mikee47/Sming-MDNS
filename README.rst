@@ -17,15 +17,15 @@ To use:
 1. Add ``COMPONENT_DEPENDS += MDNS`` to your application componenent.mk file.
 2. Add these lines to your application::
 
-   #include <Mdns/Responder.h>
+      #include <Mdns/Responder.h>
 
-   static mDNS::Responder responder;
-   
-   // Call when IP address has been obtained
-   void startmDNS()
-   {
-      responder.begin(F("myhostname");
-   }
+      static mDNS::Responder responder;
+
+      // Call when IP address has been obtained
+      void startmDNS()
+      {
+         responder.begin(F("myhostname");
+      }
 
 This will advertise the device as ``myhostname.local``.
 
@@ -41,10 +41,6 @@ Discovery
 This library also provides support for device discovery using a separate set of classes,
 based on the :cpp:class:`mDNS::Server`.
 See :sample:`Basic_Mdns` for an example.
-
-.. note::
-
-   The mDNS Server and Responder cannot currently be used together.
 
 
 Testing
