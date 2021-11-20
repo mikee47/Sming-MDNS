@@ -11,6 +11,7 @@
 #include "include/Network/Mdns/Server.h"
 #include "Packet.h"
 #include <Platform/Station.h>
+#include <debug_progmem.h>
 
 namespace mDNS
 {

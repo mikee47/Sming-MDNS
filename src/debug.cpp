@@ -1,4 +1,5 @@
 #include "Network/Mdns/debug.h"
+#include <esp_system.h>
 
 namespace
 {

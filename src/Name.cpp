@@ -11,6 +11,7 @@
 #include "include/Network/Mdns/Name.h"
 #include "include/Network/Mdns/Message.h"
 #include "Packet.h"
+#include <debug_progmem.h>
 
 namespace mDNS
 {
