@@ -145,7 +145,7 @@ void parseFile(const String& name, const void* data, size_t length)
 	Serial.print(_F("** Parsing '"));
 	Serial.print(name);
 	Serial.println(_F("' **"));
-	mDNS::Message message(0U, 0, const_cast<void*>(data), length);
+	mDNS::Message message(IPADDR_ANY, 0, const_cast<void*>(data), length);
 	if(message.parse()) {
 		mDNS::printMessage(Serial, message);
 	}
