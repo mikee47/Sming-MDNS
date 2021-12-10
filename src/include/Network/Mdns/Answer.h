@@ -72,7 +72,7 @@ public:
 	bool isCachedFlush() const;
 
 	/**
-	 * @brief ResourceRecord Time To Live: Number of seconds ths should be remembered
+	 * @brief ResourceRecord Time To Live: Number of seconds this should be remembered
 	 */
 	uint32_t getTtl() const;
 
