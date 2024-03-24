@@ -104,6 +104,8 @@ public:
 	bool send(Message& message);
 
 protected:
+	using UdpConnection::send;
+
 	void onReceive(pbuf* buf, IpAddress remoteIP, uint16_t remotePort) override;
 
 private:
